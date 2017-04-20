@@ -14,13 +14,13 @@ import os
 import dj_database_url
 
 
-__author__ = "Ville Myllynen"
+__author__ = "pesusieni999"
 __copyright__ = "Copyright 2017, Mtg website Project"
-__credits__ = ["Ville Myllynen"]
+__credits__ = ["pesusieni999"]
 __license__ = "MIT"
 __version__ = "0.0.1"
-__maintainer__ = "Ville Myllynen"
-__email__ = "ville.myllynen@student.tut.fi"
+__maintainer__ = "pesusieni999"
+__email__ = "pesusieni999@gmail.com"
 __status__ = "Development"
 
 
