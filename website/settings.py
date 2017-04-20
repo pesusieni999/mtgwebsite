@@ -15,7 +15,7 @@ import dj_database_url
 
 
 __author__ = "pesusieni999"
-__copyright__ = "Copyright 2017, Mtg website Project"
+__copyright__ = "Copyright 2017, MtG website Project"
 __credits__ = ["pesusieni999"]
 __license__ = "MIT"
 __version__ = "0.0.1"

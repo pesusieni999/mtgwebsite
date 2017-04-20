@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>Wizards of Wap</h1>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="index-sections col-md-7 well">
+      <h3>Welcome to MtG website that belongs to the Wizards of Wap.</h3>
+      {% if user.is_authenticated %}
+      <p>Hello {{ user.username }}</p>
+      {% else %}
+      <p>Hello visitor! Why don't you join us by registering?</p>
+      {% endif %}
+    </div>
+    <div class="index-sections col-md-offset-1 col-md-4 well">
+      <h3>Add some content here...?</h3>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
