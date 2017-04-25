@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block content %}
+
+<div class="container">
+  <div class="col-md-8 col-md-offset-2">
+    <div>
+      <h2>Create a new account</h2>
+    </div>
+    <form method="POST" action="." id="register.form">
+      {% csrf_token %}
+      {% for field in form %}
+      {%  bootstrap_field field %}
+      <span class="error-text">{{ form.errors.field|striptags }}</span>
+      {% endfor %}
+      <div class="form-group">
+        <input id="register-submit" type="submit" value="Register" class="btn" />
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

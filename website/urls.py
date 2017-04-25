@@ -5,6 +5,7 @@ This will reroute requests to sub applications when needed.
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.views import logout
 from . import views
 
 
@@ -21,4 +22,7 @@ __status__ = "Development"
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.Index.as_view(), name='index'),
+    url(r'^login/$', views.Login.as_view(), name='login'),
+    url(r'^logout/$', logout, name='logout'),
+    url(r'^register/$', views.Register.as_view(), name='register'),
 ]
