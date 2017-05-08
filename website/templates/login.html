@@ -3,7 +3,7 @@
 {% load bootstrap3 %}
 {% block content %}
 
-<div class="container">
+<div class="container main-container">
   <div id="login-container" class="col-md-6 col-md-offset-3">
     <div>
       <h3 class="">Login</h3>
@@ -19,9 +19,12 @@
       <div class="form-group">
         <div class="input-group">
           <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-          <input id="login-password" type="password" class="form-control" name="password" value="" placeholder="Password"
+          <input id="login-password" type="password" class="form-control" name="password" value="" placeholder="Password">
         </div>
       </div>
+      {% if form.errors %}
+      <span class="error-txt">Invalid username or password</span>
+      {% endif %}
       <div class="form-group">
         <input type="submit" id="login-submit" value="Login" class="btn btn-submit" />
       </div>

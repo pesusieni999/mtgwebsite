@@ -1,0 +1,54 @@
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.undecorated-list  {
+    list-style: none;
+    padding-left: 0;
+}
+
+.undecorated-list li:nth-child(odd) {
+    padding: 5px;
+}
+
+.undecorated-list li:nth-child(even) {
+    padding: 5px;
+}
+
+.error-txt {
+    color: red;
+}
+
+.index-jumbotron {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.notification-msg {
+    text-align: center;
+    background-color: black;
+    color: white;
+    top: 50px;
+    padding: 10px 20px;
+    width: 100%;
+    z-index: 2;
+    position: absolute;
+    display: none;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 3px 20px;
+    text-align: left;
+    color: #333;
+    text-decoration: none;
+}

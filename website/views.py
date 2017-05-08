@@ -6,8 +6,10 @@ These define what is done when routing from URLs directs here.
 
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 
 from .forms import RegistrationForm
@@ -30,7 +32,7 @@ class Index(TemplateView):
     def get(self, request, **kwargs):
         return render(request, 'index.html', {})
 
-
+'''
 class Login(TemplateView):
     """
     Login view.
@@ -39,6 +41,9 @@ class Login(TemplateView):
         return render(request, 'login.html', {'form': AuthenticationForm()})
 
     def post(self, request, **kwargs):
+        users = User.objects.all()
+        for u in users:
+            print("Username: ", u.username)
         if request.user.is_authenticated():
             return HttpResponseRedirect('index', status=200)
 
@@ -52,6 +57,7 @@ class Login(TemplateView):
                 login(request, user)
                 return redirect('index')
         return HttpResponseForbidden("Wrong username or password")
+'''
 
 
 class Register(TemplateView):
@@ -71,5 +77,10 @@ class Register(TemplateView):
             user = form.save()
             user.set_password(user.password)
             user.save()
+
+            # Auto login the user after registration.
+            if user is not None:
+                login(request, user)
+            messages.info(request, "You have successfully registered.")
             return redirect('index')
         return render(request, 'register.html', {'form': form})
