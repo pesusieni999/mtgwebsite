@@ -37,21 +37,30 @@
       </div>
       <!-- End Game information -->
 
-      {% if request.user.is_authenticated %}
+      {% if not game.is_finished and request.user.is_authenticated %}
       <!-- User actions -->
       <div class="col-xs-12 row">
-        <button id="sign-up-btn" class="btn" type="button" data-toggle="modal" data-target="#sign-up-modal-dlg">
-          <span class="glyphicon glyphicon-check">{% if is_signed_up %} Edit sign-up{% else %} Sign-up{% endif %}</span>
-        </button>
         {% if is_signed_up %}
+        <button id="sign-up-btn" class="btn" type="button" data-toggle="modal" data-target="#sign-up-modal-dlg">
+          <span class="glyphicon glyphicon-check"> Edit sign-up</span>
+        </button>
         <button id="cancel-sign-up-btn" class="btn" type="button" data-toggle="modal" data-target="#cancel-sign-up-modal-dlg">
           <span class="glyphicon glyphicon-log-out"> Cancel sign-up</span>
         </button>
+        {% else %}
+          {% if game.participants.count < game.max_sign_ups %}
+          <button id="sign-up-btn" class="btn" type="button" data-toggle="modal" data-target="#sign-up-modal-dlg">
+            <span class="glyphicon glyphicon-check"> Sign-up</span>
+          </button>
+          {% else %}
+            <p>Game is full. If you wish to sign-up, please contact game organizer.</p>
+          {% endif %}
         {% endif %}
       </div>
       <!-- End User actions -->
       {% endif %}
 
+      {% if not game.is_finished %}
       <!-- Participants table -->
       <div class="col-xs-12 row container">
         <div class="table-responsive">
@@ -88,6 +97,11 @@
         </div>
       </div>
       <!-- End Participants table -->
+      {% else %}
+      <!-- Game results. -->
+      {% include 'gameresults.html' %}
+      <!-- End Game results. -->
+      {% endif %}
 
       {% if request.user.is_authenticated and request.user == game.owner %}
       <!-- Edit game modal dialog -->

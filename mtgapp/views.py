@@ -155,6 +155,9 @@ class SignUpView(TemplateView):
             sign_up = SignUp.objects.get(game=game, user=request.user)
             sign_up_form = SignUpForm(data=request.POST, instance=sign_up)
         except SignUp.DoesNotExist:
+            if game.participants.count() >= game.max_sign_ups:
+                messages.error(request, 'Game is full. Please contact game organizer.')
+                return redirect(reverse('game', kwargs={'game_id': game.id}), request)
             sign_up_form = SignUpForm(data=request.POST)
 
         if not sign_up_form.is_valid():
@@ -177,7 +180,7 @@ class DeleteSignUpView(TemplateView):
         try:
             game = Game.objects.get(id=game_id)
         except Game.DoesNotExist:
-            messages.error(request, 'No cuch game found.')
+            messages.error(request, 'No such game found.')
             return redirect(reverse('games'), request)
 
         try:

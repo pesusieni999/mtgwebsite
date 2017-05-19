@@ -31,9 +31,21 @@ class Game(models.Model):
         through="SignUp",
         related_name="game_sign_ups"
     )
+    is_finished = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-time']
+
+    def get_results(self):
+        """
+        Get results sorted in order from first to last.
+        Dropouts are last in arbitrary order.
+        :return: Queryset containing result objects.
+        """
+        return self.results.order_by('standing')
+
+# Bitcoin M.sc student
+# daren.tuzi@student.tut.fi
 
 
 class SignUp(models.Model):
@@ -48,6 +60,18 @@ class SignUp(models.Model):
 
     class Meta:
         ordering = ['-time']
+
+
+class GameResult(models.Model):
+    """
+    Model for game results.
+    """
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="results")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    standing = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together = ('game', 'user')
 
 
 class MtgCard(models.Model):
