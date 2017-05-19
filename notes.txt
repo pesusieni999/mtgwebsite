@@ -10,5 +10,5 @@ ALTER ROLE myprojectuser SET timezone TO 'UTC';
 GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;
 \q
 exit
-./manage.py makemigrations lunchapp
+./manage.py makemigrations mtgapp
 ./manage.py migrate

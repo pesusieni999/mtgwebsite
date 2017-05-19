@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% block custom_css %}
+<link rel="stylesheet"  type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/fc-3.2.2/r-2.1.0/se-1.2.0/datatables.min.css"/>
+{% endblock %}
+{% block custom_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fc-3.2.2/r-2.1.0/se-1.2.0/datatables.min.js"></script>
+<script type="text/javascript" src="{% static 'datatables-init.js' %}"></script>
+{% endblock %}
+{% block content %}
+
+  <div class="container main-container">
+    <div class="col-md-8 col-md-offset-2">
+      <div>
+        <h3>Game - {{ game.time }}</h3>
+      </div>
+
+      {% if request.user.is_authenticated and request.user == game.owner %}
+      <!-- Game owner actions. -->
+      <div>
+        <button id=="edit-game-btn" class="btn" type="button" data-toggle="modal" data-target="#edit-modal-dlg">
+          <span class="glyphicon glyphicon-pencil"> Edit</span>
+        </button>
+        <button id="delete-game-btn" class="btn" type="button" data-toggle="modal" data-target="#delete-modal-dlg">
+          <span class="glyphicon glyphicon-remove"> Delete</span>
+        </button>
+      </div>
+      <!-- End Game owner actions.
+      {% endif %}
+
+      <!-- Game information -->
+      <div class="col-xs-12 row">
+        <span>Game format: {{ game.format }}</span><br/>
+        <span>Location: {{ game.location }}</span><br/>
+        <span>Sign-ups: {{ game.participants.count }}/{{ game.max_sign_ups }}</span>
+      </div>
+      <!-- End Game information -->
+
+      {% if request.user.is_authenticated %}
+      <!-- User actions -->
+      <div class="col-xs-12 row">
+        <button id="sign-up-btn" class="btn" type="button" data-toggle="modal" data-target="#sign-up-modal-dlg">
+          <span class="glyphicon glyphicon-check">{% if is_signed_up %} Edit sign-up{% else %} Sign-up{% endif %}</span>
+        </button>
+        {% if is_signed_up %}
+        <button id="cancel-sign-up-btn" class="btn" type="button" data-toggle="modal" data-target="#cancel-sign-up-modal-dlg">
+          <span class="glyphicon glyphicon-log-out"> Cancel sign-up</span>
+        </button>
+        {% endif %}
+      </div>
+      <!-- End User actions -->
+      {% endif %}
+
+      <!-- Participants table -->
+      <div class="col-xs-12 row container">
+        <div class="table-responsive">
+          <table class="table table-bordered datatables-table">
+            <thead>
+              <tr>
+                <th class="col-xs-4">Name</th>
+                <th class="col-xs-4">Commander</th>
+                <th class="col-xs-4">Deck list</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for sign_up in sign_ups %}
+              <tr>
+                <td>{{ sign_up.user.username }}</td>
+                <td>
+                  {% if sign_up.commander %}
+                  {{ sign_up.commander }}
+                  {% else %}
+                  NA
+                  {% endif %}
+                </td>
+                <td>
+                  {% if sign_up.deck %}
+                  <a href="{{ sign_up.deck }}">Here</a>
+                  {% else %}
+                  NA
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End Participants table -->
+
+      {% if request.user.is_authenticated and request.user == game.owner %}
+      <!-- Edit game modal dialog -->
+      <div class="modal fade" id="edit-modal-dlg" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Editing information</h3>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id="edit-game-form" method="POST" action="{% url 'game' game_id=game.id %}">
+                {% csrf_token %}
+                {% for field in game_form %}
+                {% bootstrap_field field %}
+                <span class="error-txt">{{ form.errors.field|striptags }}</span>
+                {% endfor %}
+                <div class="form-group">
+                  <input id="edit-dlg-submit" type="submit" value="Update" />
+                  <input id="edit-dlg-dismiss" type="submit" value="Cancel" data-dismiss="modal" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Edit game modal dialog. -->
+
+      <!-- Delete game modal dialog. -->
+      <div class="modal fade" id="delete-modal-dlg" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Deleting game</h3>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id="delete-game-form" method="POST" action="{% url 'delete_game' game_id=game.id %}">
+                {% csrf_token %}
+                <p>Really delete the game?</p>
+                <p>This is permanent action and game information is not retrievable afterwards.</p>
+                <div class="form-group">
+                  <input id="delete-dlg-submit" type="submit" value="Delete" class="btn" />
+                  <input id="delete-dld-dismiss" type="submit" value="Cancel" class="btn" data-dismiss="modal" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Delete game modal dialog. -->
+      {% endif %}
+
+      {% if request.user.is_authenticated %}
+      <!-- Sign-up modal dialog -->
+      <div class="modal fade" id="sign-up-modal-dlg" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Sign-up</h3>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id="sign-up-game-form" method="POST" action="{% url 'sign_up' game_id=game.id %}">
+                {% csrf_token %}
+                {% for field in sign_up_form %}
+                {% bootstrap_field field %}
+                <span class="error-txt">{{ form.errors.field|striptags }}</span>
+                {% endfor %}
+                <div class="form-group">
+                  <input id="sign-up-dlg-submit" type="submit" value="{% if is_signed_up %}Save{% else %}Sign-up{% endif %}" />
+                  <input id="sign-up-dlg-dismiss" type="submit" value="Cancel" data-dismiss="modal" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Sign-up modal dialog -->
+
+      <!-- Cancel sign-up modal dialog -->
+      <div class="modal fade" id="cancel-sign-up-modal-dlg" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Cancel sign-up</h3>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id="cancel-sign-up-game-form" method="POST" action="{% url 'delete_sign_up' game_id=game.id %}">
+                {% csrf_token %}
+                <p>Really cancel your sign-up?</p>
+                <p>This is permanent action and sign-up information is not retrievable afterwards.</p>
+                <p>Possible game results will remain in the system.</p>
+                <div class="form-group">
+                  <input id="cancel-signup-dlg-submit" type="submit" value="Cancel sign-up" />
+                  <input id="cancel-signup-dlg-dismiss" type="submit" value="Cancel" data-dismiss="modal" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Cancel sign-up modal dialog -->
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

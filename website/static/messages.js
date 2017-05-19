@@ -1,3 +1,3 @@
 $(document).ready(function() {
-    $(".messages").fadeIn('slow').delay(5000).fadeOut('slow');
+    $(".messages").fadeIn('slow').delay(2000).fadeOut('slow');
 });

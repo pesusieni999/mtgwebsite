@@ -18,4 +18,8 @@ __status__ = "Development"
 
 urlpatterns = [
     url(r'^games/$', views.Games.as_view(), name='games'),
+    url(r'^games/(?P<game_id>\d+)/$', views.GameView.as_view(), name='game'),
+    url(r'^games/(?P<game_id>\d+)/delete/$', views.DeleteGameView.as_view(), name='delete_game'),
+    url(r'^games/(?P<game_id>\d+)/signup/$', views.SignUpView.as_view(), name='sign_up'),
+    url(r'^games/(?P<game_id>\d+)/signup/delete$', views.DeleteSignUpView.as_view(), name='delete_sign_up'),
 ]

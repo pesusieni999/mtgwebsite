@@ -12,14 +12,22 @@ This is personal project and for personal usage.
 * JQuery
 * PostgreSQL
 
+## Current features
+* Registration
+* Login/Logout
+* Create/Edit/Delete games.
+* Create/Edit/Delete sign-ups to games.
+
 ## Planned features (ideas)
 * List played formats.
-* Banlist
+* Banned cards list.
+* Club rules.
 * Discussion about bans/unbans.
 * Votes (bans/unbans/formats/etc) 
 * Trade lists
 * Comparing trade lists
 * Keeping track of club purchases and booster usage
+* Customizable randomizer (Random commanders, cards, etc.)
 
 ## Contribution
 ### Participate in development, do the following:
