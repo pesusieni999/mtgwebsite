@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% block custom_css %}
+<link rel="stylesheet"  type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/fc-3.2.2/r-2.1.0/se-1.2.0/datatables.min.css"/>
+{% endblock %}
+{% block custom_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fc-3.2.2/r-2.1.0/se-1.2.0/datatables.min.js"></script>
+<script type="text/javascript" src="{% static 'datatables-init.js' %}"></script>
+{% endblock %}
+{% block content %}
+
+  <div class="container main-container">
+    <div class="col-md-8 col-md-offset-2">
+      <div>
+        <h3>Poll - {{ poll.name }}</h3>
+      </div>
+
+      {% if request.user.is_authenticated and request.user == poll.owner %}
+      <!-- Poll owner actions. -->
+      <div>
+        <button id=="edit-poll-btn" class="btn btn-default" type="button" data-toggle="modal" data-target="#edit-modal-dlg">
+          <span class="glyphicon glyphicon-pencil"> Edit</span>
+        </button>
+        <button id="delete-poll-btn" class="btn btn-default" type="button" data-toggle="modal" data-target="#delete-modal-dlg">
+          <span class="glyphicon glyphicon-remove"> Delete</span>
+        </button>
+        <a href="{% url 'poll_options' poll_id=poll.id %}" class="btn btn-default">
+          <span class="glyphicon glyphicon-list"> Edit poll options</span>
+        </a>
+      </div>
+      <!-- End Poll owner actions.
+      {% endif %}
+
+      <!-- Poll information -->
+      <div class="col-xs-12 row">
+        <span>Poll creator: {{ poll.owner.username }}</span><br/>
+        <span>Question: {{ poll.question }}</span><br/>
+        {% if poll.single_selection %}
+        <span>Single-choice poll</span><br/>
+        {% else %}
+        <span>Multi-choice poll</span><br/>
+        {% endif %}
+        <span>Poll is: {% if poll.is_closed %}Closed{% else %}Open{% endif %}</span><br/>
+        <span>Poll is: {% if poll.public %}Public{% else %}Private{% endif %}</span><br/>
+        {% if not poll.is_closed %}
+        <span>Poll closes: {{ poll.end_time }}</span><br/>
+        {% endif %}
+        <span>Votes: {{ poll.get_answer_count }}</span><br/>
+      </div>
+      <!-- End Poll information -->
+
+      {% if poll_options.count == 0 %}
+      <h3>Poll currently has no options.</h3>
+      {% else %}
+      {% if not poll.is_closed and request.user.is_authenticated %}
+      <!-- User actions -->
+      <div class="col-xs-12 row">
+        {% if has_voted %}
+        <button id="edit-vote-btn" class="btn btn-default" type="button" data-toggle="modal" data-target="#vote-modal-dlg">
+          <span class="glyphicon glyphicon-check"> Edit vote</span>
+        </button>
+        <button id="delete-vote-btn" class="btn btn-default" type="button" data-toggle="modal" data-target="#delete-vote-modal-dlg">
+          <span class="glyphicon glyphicon-remove"> Delete vote</span>
+        </button>
+        {% else %}
+          <button id="vote-btn" class="btn btn-default" type="button" data-toggle="modal" data-target="#vote-modal-dlg">
+            <span class="glyphicon glyphicon-check"> Vote</span>
+          </button>
+        {% endif %}
+      </div>
+      <!-- End User actions -->
+      {% endif %}
+
+      <!-- Poll results table -->
+      <div class="col-xs-12 row container">
+        <div class="table-responsive">
+          <table class="table table-bordered datatables-table">
+            <thead>
+              <tr>
+                {% if poll.public %}
+                <!-- Shown only if poll is public -->
+                <th class="col-xs-4">User</th>
+                {% endif %}
+                {% for poll_option in poll_options %}
+                <th class="col-xs-2">{{ poll_option.text }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Always show total results -->
+              <tr>
+                {% if poll.public %}
+                <td>Total</td>
+                {% endif %}
+                {% for poll_option in poll_options %}
+                <td>{{ poll_option.get_answer_count }}</td>
+                {% endfor %}
+              </tr>
+
+              {% if poll.public %}
+              <!-- Show individual voters vote. -->
+              {% for poll_answer in poll.get_answers %}
+              <tr>
+                <td>{{ poll_answer.owner.username }}</td>
+                {% for poll_option in poll_options %}
+                <td>{% if poll_answer.answer == poll_option %}X{% endif %}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End Poll results table -->
+      {% endif %}
+
+      {% if request.user.is_authenticated and request.user == poll.owner %}
+      <!-- Edit poll modal dialog -->
+      <div class="modal fade" id="edit-modal-dlg" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Editing information</h3>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id="edit-game-form" method="POST" action="{% url 'poll' poll_id=poll.id %}">
+                {% csrf_token %}
+                {% for field in poll_form %}
+                {% bootstrap_field field %}
+                <span class="error-txt">{{ form.errors.field|striptags }}</span>
+                {% endfor %}
+                <div class="form-group">
+                  <input id="edit-dlg-submit" type="submit" value="Update" />
+                  <input id="edit-dlg-dismiss" type="submit" value="Cancel" data-dismiss="modal" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Edit poll modal dialog. -->
+
+      <!-- Delete poll modal dialog. -->
+      <div class="modal fade" id="delete-modal-dlg" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Deleting poll</h3>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id="delete-game-form" method="POST" action="{% url 'delete_poll' poll_id=poll.id %}">
+                {% csrf_token %}
+                <p>Really delete the poll?</p>
+                <p>This is permanent action and poll information is not retrievable afterwards.</p>
+                <div class="form-group">
+                  <input id="delete-dlg-submit" type="submit" value="Delete" class="btn btn-default" />
+                  <input id="delete-dld-dismiss" type="submit" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Delete poll modal dialog. -->
+      {% endif %}
+
+      {% if request.user.is_authenticated %}
+      <!-- Vote modal dialog -->
+      <div class="modal fade" id="vote-modal-dlg" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Vote</h3>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id="vote-form" method="POST" action="{% url 'vote' poll_id=poll.id %}">
+                {% csrf_token %}
+                {% for field in sign_up_form %}
+                {% bootstrap_field field %}
+                <span class="error-txt">{{ form.errors.field|striptags }}</span>
+                {% endfor %}
+                <div class="form-group">
+                  <input id="vote-dlg-submit" type="submit" value="{% if has_voted %}Save{% else %}Vote{% endif %}" />
+                  <input id="vote-dlg-dismiss" type="submit" value="Cancel" data-dismiss="modal" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Vote modal dialog -->
+
+      <!-- Delete vote modal dialog -->
+      <div class="modal fade" id="delete-vote-modal-dlg" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Delete vote</h3>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" id="delete-vote-form" method="POST" action="{% url 'delete_vote' poll_id=poll.id %}">
+                {% csrf_token %}
+                <p>Really delete your vote?</p>
+                <p>This is permanent action and vote information is not retrievable afterwards.</p>
+                <div class="form-group">
+                  <input id="delete-vote-dlg-submit" type="submit" value="Cancel sign-up" />
+                  <input id="delete-vote-dlg-dismiss" type="submit" value="Cancel" data-dismiss="modal" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Delete vote modal dialog -->
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^logout/$', logout, {'next_page': 'index'}, name='logout'),
     url(r'^register/$', views.Register.as_view(), name='register'),
     url(r'^mtg/', include('mtgapp.urls')),
+    url(r'^polls/', include('pollapp.urls')),
 ]

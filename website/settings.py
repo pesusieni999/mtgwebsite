@@ -52,7 +52,6 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -62,8 +61,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'mtgapp',
+    'pollapp',
 ]
 
+# Middleware definition
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -77,12 +78,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'website.urls'
 
+# Template configurations.
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'website', 'templates'),
             os.path.join(BASE_DIR, 'mtgapp', 'templates'),
+            os.path.join(BASE_DIR, 'pollapp', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -99,9 +102,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'website.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
+# Database configuration.
 using_heroku = False
 if 'DATABASE_URL' in os.environ:
     using_heroku = True

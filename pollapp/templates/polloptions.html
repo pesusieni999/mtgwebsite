@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% block custom_css %}
+{% endblock %}
+{% block custom_js %}
+<script type="text/javascript" src="{% static 'polloptions.js' %}"></script>
+{% endblock %}
+{% block content %}
+
+<div class="container main-container">
+  <div class="col-md-8 col-md-offset-2">
+    <div>
+      <h3>Poll options</h3>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <!-- Authenticated user actions. -->
+    <div>
+      <button id="create-option-btn" class="btn btn-default" type="button">
+        <span class="glyphicon glyphicon-plus"> Add option</span>
+      </button>
+      <button id="save-options-btn" class="btn btn-default" type="button">
+        <span class="glyphicon glyphicon-save"> Save</span>
+      </button>
+      <a href="{% url 'poll' poll_id=poll.id %}" class="btn btn-default">
+        <span class="glyphicon glyphicon-arrow-left"> Back to poll</span>
+      </a>
+      <a href="{% url 'poll_options' poll_id=poll.id %}" class="hidden" id="save-url"></a>
+    </div>
+    <!-- End Game owner actions.
+    {% endif %}
+
+    <!-- Options table -->
+    <div class="col-xs-12 row container">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="options-table">
+          <thead>
+            <tr>
+              <th class="col-xs-10">Option</th>
+              <th class="col-xs-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for poll_option in poll_options %}
+            <tr>
+              <td>
+                <input class="form-group option-text-input" type="text" name="option-text" value="{{ poll_option.text }}"><br/>
+                <input class="option-id-input" type="hidden" name="option-id" value="{{ poll_option.id }}">
+              </td>
+              <td>
+                <button class="remove-option-btn btn btn-default">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- End Options table -->
+
+    <!-- Model for table row. -->
+    <div class="hidden" id="table-row-model">
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <input class="form-group option-text-input" type="text" name="option-text" value="{{ poll_option.text }}"><br/>
+              <input class="option-id-input" type="hidden" name="option-id" value="{{ poll_option.id }}">
+            </td>
+            <td>
+              <button class="remove-option-btn btn btn-default">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

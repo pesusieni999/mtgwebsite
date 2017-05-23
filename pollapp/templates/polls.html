@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% block custom_css %}
+<link rel="stylesheet"  type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/fc-3.2.2/r-2.1.0/se-1.2.0/datatables.min.css"/>
+{% endblock %}
+{% block custom_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fc-3.2.2/r-2.1.0/se-1.2.0/datatables.min.js"></script>
+<script type="text/javascript" src="{% static 'datatables-init.js' %}"></script>
+{% endblock %}
+{% block content %}
+
+<div class="container main-container">
+  <div class="col-md-8 col-md-offset-2">
+    <div>
+      <h3>Polls</h3>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <!-- Authenticated user actions. -->
+    <div>
+      <button id=="create-poll-btn" class="btn btn-default" type="button" data-toggle="modal" data-target="#create-modal-dlg">
+        <span class="glyphicon glyphicon-plus"> Create poll</span>
+      </button>
+    </div>
+    <!-- End Game owner actions.
+    {% endif %}
+
+    <!-- Polls table -->
+    <div class="col-xs-12 row container">
+      <div class="table-responsive">
+        <table class="table table-bordered datatables-table">
+          <thead>
+            <tr>
+              <th class="col-xs-4">Name</th>
+              <th class="col-xs-4">Owner</th>
+              <th class="col-xs-1">Open</th>
+              <th class="col-xs-2">Closes</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for poll in polls %}
+            <tr>
+              <td>
+                <a class="row-link" href="{% url 'poll' poll_id=poll.id %}">{{ poll.name }}</a>
+              </td>
+              <td>{{ poll.owner.username }}</td>
+              <td>{% if poll.is_closed %}No{% else %}Yes{% endif %}</td>
+              <td>{{ poll.end_time }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- End Polls table -->
+
+    {% if request.user.is_authenticated %}
+    <!-- Create new poll modal dialog -->
+    <div class="modal fade" id="create-modal-dlg" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Create new poll</h3>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" id="create-game-form" method="POST" action="{% url 'polls' %}">
+              {% csrf_token %}
+
+              <h3>Poll information</h3>
+              <!-- Poll information -->
+              {% for field in poll_form %}
+              {% bootstrap_field field %}
+              <span class="error-txt">{{ poll_form.errors.field|striptags }}</span>
+              {% endfor %}
+
+              <!-- Submit buttons -->
+              <div class="form-group">
+                <input id="add-dlg-submit" type="submit" value="Create" class="btn btn-default" />
+                <input id="add-dlg-dismiss" type="submit" value="Cancel" data-dismiss="modal" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Create new poll modal dialog -->
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

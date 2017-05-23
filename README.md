@@ -23,7 +23,7 @@ This is personal project and for personal usage.
 * Banned cards list.
 * Club rules.
 * Discussion about bans/unbans.
-* Votes (bans/unbans/formats/etc) 
+* Votes (bans/unbans/formats/etc) *UNDER WORK.*
 * Trade lists
 * Comparing trade lists
 * Keeping track of club purchases and booster usage
@@ -52,10 +52,10 @@ This is personal project and for personal usage.
 git clone git@github.com:pesusieni999/mtgwebsite.git
 
 # 2. Installing Python
-TODO
+Should be preinstalled in Ubuntu OS. For other OS see Python website.
 
 # 3. Installing pip for Python3
-TODO
+Should be preinstalled in Ubuntu OS. For other OS see documentation on the Web.
 
 # 4. Installing requirements for PostgreSQL
 sudo apt-get install python-dev libpq-dev postgresql postgresql-contrib
